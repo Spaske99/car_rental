@@ -33,6 +33,10 @@ class User
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private \DateTimeInterface $updated;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private Role $role;
+
     public function getId(): int
     {
         return $this->id;
@@ -106,6 +110,18 @@ class User
     public function setUpdated(\DateTimeInterface $updated): static
     {
         $this->updated = $updated;
+
+        return $this;
+    }
+
+    public function getRole(): Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(Role $role): static
+    {
+        $this->role = $role;
 
         return $this;
     }

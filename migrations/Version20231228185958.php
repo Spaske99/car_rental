@@ -18,13 +18,13 @@ final class Version20231228185958 extends AbstractMigration
     {
         $this->addSql('CREATE TABLE car (
             id SERIAL PRIMARY KEY, 
-        brand VARCHAR(50) NOT NULL, 
-        model VARCHAR(50) NOT NULL, 
-        daily_price DOUBLE PRECISION NOT NULL, 
-        description VARCHAR(255) NOT NULL, 
-        image BYTEA NOT NULL, 
-        created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, 
-        updated TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
+            brand VARCHAR(50) NOT NULL, 
+            model VARCHAR(50) NOT NULL, 
+            daily_price DOUBLE PRECISION NOT NULL, 
+            description VARCHAR(255) NOT NULL, 
+            image BYTEA NOT NULL, 
+            created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, 
+            updated TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
         )');
     }
 
