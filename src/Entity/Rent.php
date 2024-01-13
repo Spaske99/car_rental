@@ -27,6 +27,10 @@ class Rent
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private Car $car;
+
     public function getId(): int
     {
         return $this->id;
@@ -76,6 +80,18 @@ class Rent
     public function setUser(User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCar(): Car
+    {
+        return $this->car;
+    }
+
+    public function setCar(Car $car): static
+    {
+        $this->car = $car;
 
         return $this;
     }
