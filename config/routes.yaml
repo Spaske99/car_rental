@@ -8,3 +8,8 @@ add_user:
     path: '/user/add'
     controller: 'App\Controller\UserController::add'
     methods: POST
+
+get_all_users:
+    path: '/users/getAll'
+    controller: 'App\Controller\UserController::getAll'
+    methods: GET

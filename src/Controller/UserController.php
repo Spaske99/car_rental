@@ -39,6 +39,27 @@ class UserController extends AbstractController
 
         return new JsonResponse(['User created!'], Response::HTTP_CREATED);
     }
+
+    public function getAll(): JsonResponse
+    {
+        $users = $this->userRepository->findAll();
+        $data = [];
+
+        foreach ($users as $user) {
+            $data[] = [
+                'id' => $user->getId(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword(),
+                'created' => $user->getCreated(),
+                'updated' => $user->getUpdated(),
+                'role' => $user->getRole(),
+            ];
+        }
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
 }
 
 
