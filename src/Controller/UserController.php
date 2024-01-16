@@ -60,6 +60,24 @@ class UserController extends AbstractController
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
+
+    public function get($id): JsonResponse
+    {
+        $user = $this->userRepository->find($id);
+
+        $data[] = [
+            'id' => $user->getId(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'created' => $user->getCreated(),
+            'updated' => $user->getUpdated(),
+            'role' => $user->getRole(),
+        ];
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
 }
 
 
