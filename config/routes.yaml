@@ -18,3 +18,8 @@ get_user:
     path: '/users/get/{id}'
     controller: 'App\Controller\UserController::get'
     methods: GET
+
+update_user:
+    path: '/user/update/{id}'
+    controller: 'App\Controller\UserController::update'
+    methods: PUT

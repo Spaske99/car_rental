@@ -37,7 +37,7 @@ class UserController extends AbstractController
 
         $this->userRepository->saveUser($firstName, $lastName, $email, $password, $created, $updated, $role);
 
-        return new JsonResponse(['User created!'], Response::HTTP_CREATED);
+        return new JsonResponse('User created!', Response::HTTP_CREATED);
     }
 
     public function getAll(): JsonResponse
@@ -77,6 +77,21 @@ class UserController extends AbstractController
         ];
 
         return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+    public function update($id, Request $request): JsonResponse
+    {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        $data = json_decode($request->getContent(), true);
+
+        empty($data['firstName']) ? true : $user->setFirstName($data['firstName']);
+        empty($data['lastName']) ? true : $user->setLastName($data['lastName']);
+        empty($data['email']) ? true : $user->setEmail($data['email']);
+        empty($data['password']) ? true : $user->setPassword($data['password']);
+
+        $updatedUser = $this->userRepository->updateUser($user);
+
+        return new JsonResponse($updatedUser->jsonSerialize(), Response::HTTP_OK);
     }
 }
 
