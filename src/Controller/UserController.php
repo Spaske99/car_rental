@@ -27,15 +27,13 @@ class UserController extends AbstractController
         $lastName = $data['lastName'];
         $email = $data['email'];
         $password = $data['password'];
-        $created = $data['created'];
-        $updated = $data['updated'];
         $role = $data['role'];
 
-        if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($created) || empty($updated) || empty($role)) {
+        if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($role)) {
             throw new BadRequestHttpException('Expecting mandatory parameters!');
         }
 
-        $this->userRepository->saveUser($firstName, $lastName, $email, $password, $created, $updated, $role);
+        $this->userRepository->saveUser($firstName, $lastName, $email, $password,$role);
 
         return new JsonResponse('User created!', Response::HTTP_CREATED);
     }
@@ -81,7 +79,7 @@ class UserController extends AbstractController
 
     public function update($id, Request $request): JsonResponse
     {
-        $user = $this->userRepository->findOneBy(['id' => $id]);
+        $user = $this->userRepository->find($id);
         $data = json_decode($request->getContent(), true);
 
         empty($data['firstName']) ? true : $user->setFirstName($data['firstName']);

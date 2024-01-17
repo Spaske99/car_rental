@@ -5,9 +5,14 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\PrePersist;
+use Doctrine\ORM\Mapping\PreUpdate;
+use DateTimeImmutable;
+use DateTime;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[ORM\HasLifecycleCallbacks]
 class User
 {
     #[ORM\Id]
@@ -36,6 +41,19 @@ class User
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private Role $role;
+
+    #[ORM\PrePersist]
+    public function createDate(): void
+    {
+        $this->setCreated(new \DateTimeImmutable());
+        $this->setUpdated(new \DateTime());
+    }
+
+    #[ORM\PreUpdate]
+    public function updateDate()
+    {
+        $this->setUpdated(new \DateTime());
+    }
 
     public function getId(): int
     {

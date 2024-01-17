@@ -15,7 +15,7 @@ get_all_users:
     methods: GET
 
 get_user:
-    path: '/users/get/{id}'
+    path: '/user/get/{id}'
     controller: 'App\Controller\UserController::get'
     methods: GET
 
