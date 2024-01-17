@@ -93,6 +93,15 @@ class UserController extends AbstractController
 
         return new JsonResponse($updatedUser->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function delete($id): jsonResponse
+    {
+        $user = $this->userRepository->find($id);
+
+        $deleteUser = $this->userRepository->deleteUser($user);
+        
+        return new JsonResponse('User deleted!', Response::HTTP_NO_CONTENT);
+    }
 }
 
 

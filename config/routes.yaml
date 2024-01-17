@@ -23,3 +23,8 @@ update_user:
     path: '/user/update/{id}'
     controller: 'App\Controller\UserController::update'
     methods: PUT
+
+delete_user:
+    path: '/user/delete/{id}'
+    controller: 'App\Controller\UserController::delete'
+    methods: DELETE
