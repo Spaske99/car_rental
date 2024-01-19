@@ -30,7 +30,7 @@ class UserRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveUser($firstName, $lastName, $email, $password, $roleId)
+    public function addUser($firstName, $lastName, $email, $password, $roleId)
     {
         $role = $this->manager->getRepository(Role::class)->find($roleId);
 

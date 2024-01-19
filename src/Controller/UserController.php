@@ -33,7 +33,7 @@ class UserController extends AbstractController
             throw new BadRequestHttpException('Expecting mandatory parameters!');
         }
 
-        $this->userRepository->saveUser($firstName, $lastName, $email, $password,$role);
+        $this->userRepository->addUser($firstName, $lastName, $email, $password, $role);
 
         return new JsonResponse('User created!', Response::HTTP_CREATED);
     }
@@ -52,7 +52,7 @@ class UserController extends AbstractController
                 'password' => $user->getPassword(),
                 'created' => $user->getCreated(),
                 'updated' => $user->getUpdated(),
-                'role' => $user->getRole(),
+                'role' => $user->getRole()->getRoleType()
             ];
         }
 
@@ -71,7 +71,7 @@ class UserController extends AbstractController
             'password' => $user->getPassword(),
             'created' => $user->getCreated(),
             'updated' => $user->getUpdated(),
-            'role' => $user->getRole(),
+            'role' => $user->getRole()->getRoleType()
         ];
 
         return new JsonResponse($data, Response::HTTP_OK);
