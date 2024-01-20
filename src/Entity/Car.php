@@ -7,6 +7,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
+#[ORM\Table(name: 'car')]
+#[ORM\HasLifecycleCallbacks]
 class Car
 {
     #[ORM\Id]
@@ -34,6 +36,19 @@ class Car
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private \DateTimeInterface $updated;
+
+    #[ORM\PrePersist]
+    public function createDate(): void
+    {
+        $this->setCreated(new \DateTimeImmutable());
+        $this->setUpdated(new \DateTime());
+    }
+
+    #[ORM\PreUpdate]
+    public function updateDate()
+    {
+        $this->setUpdated(new \DateTime());
+    }
 
     public function getId(): int
     {

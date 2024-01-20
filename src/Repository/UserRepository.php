@@ -30,24 +30,24 @@ class UserRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function addUser($firstName, $lastName, $email, $password, $roleId)
+    public function add($firstName, $lastName, $email, $password, $roleId)
     {
         $role = $this->manager->getRepository(Role::class)->find($roleId);
 
-        $newUser = new User();
+        $user = new User();
 
-        $newUser
+        $user
             ->setFirstName($firstName)
             ->setLastName($lastName)
             ->setEmail($email)
             ->setPassword($password)
             ->setRole($role);
 
-        $this->manager->persist($newUser);
+        $this->manager->persist($user);
         $this->manager->flush();
     }
 
-    public function updateUser(User $user): User
+    public function update(User $user): User
     {
         $this->manager->persist($user);
         $this->manager->flush();
@@ -55,7 +55,7 @@ class UserRepository extends ServiceEntityRepository
         return $user;
     }
 
-    public function deleteUser(User $user)
+    public function delete(User $user)
     {
         $this->manager->remove($user);
         $this->manager->flush();

@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
@@ -33,9 +32,9 @@ class UserController extends AbstractController
             throw new BadRequestHttpException('Expecting mandatory parameters!');
         }
 
-        $this->userRepository->addUser($firstName, $lastName, $email, $password, $role);
+        $this->userRepository->add($firstName, $lastName, $email, $password, $role);
 
-        return new JsonResponse('User created!', Response::HTTP_CREATED);
+        return new JsonResponse('User added!', Response::HTTP_CREATED);
     }
 
     public function getAll(): JsonResponse
@@ -87,7 +86,7 @@ class UserController extends AbstractController
         empty($data['email']) ? true : $user->setEmail($data['email']);
         empty($data['password']) ? true : $user->setPassword($data['password']);
 
-        $updatedUser = $this->userRepository->updateUser($user);
+        $updatedUser = $this->userRepository->update($user);
 
         return new JsonResponse($updatedUser->jsonSerialize(), Response::HTTP_OK);
     }
@@ -96,7 +95,7 @@ class UserController extends AbstractController
     {
         $user = $this->userRepository->find($id);
 
-        $deleteUser = $this->userRepository->deleteUser($user);
+        $deleteUser = $this->userRepository->delete($user);
         
         return new JsonResponse('User deleted!', Response::HTTP_NO_CONTENT);
     }

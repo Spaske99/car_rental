@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Car;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,33 +17,30 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CarRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $manager;
+
+    public function __construct
+    (
+        ManagerRegistry $registry,
+        EntityManagerInterface $manager
+    )
     {
         parent::__construct($registry, Car::class);
+        $this->manager = $manager;
     }
 
-//    /**
-//     * @return Car[] Returns an array of Car objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Car
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function add($brand, $model, $dailyPrice, $description, $image)
+    {
+        $car = new car();
+       
+        $car
+            ->setBrand($brand)
+            ->setModel($model)
+            ->setDailyPrice($dailyPrice)
+            ->setDescription($description)
+            ->setImage($image);
+        
+        $this->manager->persist($car);
+        $this->manager->flush();
+    }
 }
