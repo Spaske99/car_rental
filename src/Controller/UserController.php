@@ -87,7 +87,7 @@ class UserController extends AbstractController
         empty($data['password']) ? true : $user->setPassword($data['password']);
 
         $updatedUser = $this->userRepository->update($user);
-
+        
         return new JsonResponse($updatedUser->jsonSerialize(), Response::HTTP_OK);
     }
 
@@ -95,7 +95,7 @@ class UserController extends AbstractController
     {
         $user = $this->userRepository->find($id);
 
-        $deleteUser = $this->userRepository->delete($user);
+        $this->userRepository->delete($user);
         
         return new JsonResponse('User deleted!', Response::HTTP_NO_CONTENT);
     }

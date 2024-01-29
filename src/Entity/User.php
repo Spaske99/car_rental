@@ -142,7 +142,8 @@ class User
 
     public function jsonSerialize(): array
     {
-        return [
+        return 
+        [
             'firstName' => $this->getFirstName(),
             'lastName' => $this->getLastName(),
             'email' => $this->getEmail(),

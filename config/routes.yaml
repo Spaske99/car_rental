@@ -33,3 +33,8 @@ add_car:
     path: '/car'
     controller: 'App\Controller\CarController::add'
     methods: POST
+
+get_all_cars:
+    path: '/car'
+    controller: 'App\Controller\CarController::getAll'
+    methods: GET

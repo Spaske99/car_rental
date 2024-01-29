@@ -36,4 +36,22 @@ class CarController extends AbstractController
 
         return new JsonResponse('Car added!', Response::HTTP_CREATED);
     }
+
+    public function getAll(): JsonResponse
+    {
+        $cars = $this->carRepository->findAll();
+        $data = [];
+        
+        foreach ($cars as $car) {
+            $data[] = [
+                "id" => $car->getId(),
+                "brand" => $car->getBrand(),
+                "model" => $car->getModel(),
+                "dailyPrice" => $car->getDailyPrice(),
+                "description" => $car->getDescription(),
+            ];
+        }
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
 }
