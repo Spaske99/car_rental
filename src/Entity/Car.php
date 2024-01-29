@@ -138,4 +138,15 @@ class Car
 
         return $this;
     }
+
+    public function jsonSerialize() 
+    {
+        return 
+        [
+            "brand"         => $this->getBrand(),
+            "model"         => $this->getModel(),
+            "dailyPrice"    => $this->getDailyPrice(),
+            "description"   => $this->getDescription(),
+        ];
+    }
 }

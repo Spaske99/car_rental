@@ -43,4 +43,12 @@ class CarRepository extends ServiceEntityRepository
         $this->manager->persist($car);
         $this->manager->flush();
     }
+
+    public function update(Car $car): Car
+    {
+        $this->manager->persist($car);
+        $this->manager->flush();
+
+        return $car;
+    }
 }

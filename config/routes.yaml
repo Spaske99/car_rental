@@ -43,3 +43,8 @@ get_car:
     path: '/car/{id}'
     controller: 'App\Controller\CarController::get'
     methods: GET
+
+update_car:
+    path: '/car/{id}'
+    controller: 'App\Controller\CarController::update'
+    methods: PUT

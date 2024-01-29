@@ -69,4 +69,20 @@ class CarController extends AbstractController
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        $car = $this->carRepository->find($id);
+        
+        empty($data['brand'])? true : $car->setBrand($data['brand']);
+        empty($data['model'])? true : $car->setModel($data['model']);
+        empty($data['dailyPrice'])? true : $car->setDailyPrice($data['dailyPrice']);
+        empty($data['description'])? true : $car->setDescription($data['description']);
+        
+        $updatedCar = $this->carRepository->update($car);
+        
+        return new JsonResponse($updatedCar->jsonSerialize(), Response::HTTP_OK);
+    }
 }
