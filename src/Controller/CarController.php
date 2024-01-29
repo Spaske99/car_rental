@@ -85,4 +85,13 @@ class CarController extends AbstractController
         
         return new JsonResponse($updatedCar->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function delete($id): JsonResponse
+    {
+        $car = $this->carRepository->find($id);
+
+        $this->carRepository->delete($car);
+
+        return new JsonResponse('Car deleted!', Response::HTTP_NO_CONTENT);
+    }
 }

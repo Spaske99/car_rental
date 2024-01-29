@@ -48,3 +48,8 @@ update_car:
     path: '/car/{id}'
     controller: 'App\Controller\CarController::update'
     methods: PUT
+
+delete_car:
+    path: '/car/{id}'
+    controller: 'App\Controller\CarController::delete'
+    methods: DELETE

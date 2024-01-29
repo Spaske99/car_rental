@@ -51,4 +51,10 @@ class CarRepository extends ServiceEntityRepository
 
         return $car;
     }
+
+    public function delete(Car $car)
+    {
+        $this->manager->remove($car);
+        $this->manager->flush();
+    }
 }
