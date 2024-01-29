@@ -38,3 +38,8 @@ get_all_cars:
     path: '/car'
     controller: 'App\Controller\CarController::getAll'
     methods: GET
+
+get_car:
+    path: '/car/{id}'
+    controller: 'App\Controller\CarController::get'
+    methods: GET
