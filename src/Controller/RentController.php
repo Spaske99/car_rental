@@ -99,4 +99,13 @@ class RentController extends AbstractController
 
         return new JsonResponse($uodatedRent->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function delete($id): jsonResponse
+    {
+        $rent = $this->rentRepository->find($id);
+
+        $this->rentRepository->delete($rent);
+        
+        return new JsonResponse('Rent deleted!', Response::HTTP_NO_CONTENT);
+    }
 }

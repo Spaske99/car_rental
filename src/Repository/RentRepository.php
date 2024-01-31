@@ -58,4 +58,10 @@ class RentRepository extends ServiceEntityRepository
 
         return $rent;
     }
+
+    public function delete(Rent $rent)
+    {
+        $this->manager->remove($rent);
+        $this->manager->flush();
+    }
 }

@@ -73,3 +73,8 @@ update_rent:
     path: '/rent/{id}'
     controller: 'App\Controller\RentController::update'
     methods: PUT
+
+delete_rent:
+    path: '/rent/{id}'
+    controller: 'App\Controller\RentController::delete'
+    methods: DELETE
