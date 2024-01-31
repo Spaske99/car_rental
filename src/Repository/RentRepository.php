@@ -2,8 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Car;
 use App\Entity\Rent;
+use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,33 +20,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RentRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $manager;
+
+    public function __construct
+    (
+        ManagerRegistry $registry, 
+        EntityManagerInterface $manager
+    )
     {
         parent::__construct($registry, Rent::class);
+        $this->manager = $manager;
     }
 
-//    /**
-//     * @return Rent[] Returns an array of Rent objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function add($rentedFrom, $rentedUntil, $approved, $userId, $carId)
+    {
+        $user = $this->manager->getRepository(User::class)->find($userId);
+        $car = $this->manager->getRepository(Car::class)->find($carId);
+        $rent = new Rent();
 
-//    public function findOneBySomeField($value): ?Rent
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $rent
+            ->setRentedFrom(new DateTime($rentedFrom))
+            ->setRentedUntil(new DateTime($rentedUntil))
+            ->setApproved($approved)
+            ->setUser($user)
+            ->setCar($car);
+
+        $this->manager->persist($rent);
+        $this->manager->flush();
+    }
 }

@@ -53,3 +53,8 @@ delete_car:
     path: '/car/{id}'
     controller: 'App\Controller\CarController::delete'
     methods: DELETE
+
+add_rent:
+    path: '/rent'
+    controller: 'App\Controller\RentController::add'
+    methods: POST
