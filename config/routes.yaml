@@ -35,7 +35,7 @@ add_car:
     methods: POST
 
 get_all_cars:
-    path: '/car'
+    path: '/cars'
     controller: 'App\Controller\CarController::getAll'
     methods: GET
 
@@ -58,3 +58,8 @@ add_rent:
     path: '/rent'
     controller: 'App\Controller\RentController::add'
     methods: POST
+
+get_all_rents:
+    path: '/rents'
+    controller: 'App\Controller\RentController::getAll'
+    methods: GET

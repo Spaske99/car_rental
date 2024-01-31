@@ -38,4 +38,25 @@ class RentController extends AbstractController
         return new JsonResponse('Rent added!', Response::HTTP_CREATED);
     }
 
+    public function getAll(): JsonResponse
+    {
+        $rents = $this->rentRepository->findAll();
+
+        $data = [];
+        foreach($rents as $rent) {
+            $data[] = [
+                "rentedFrom" => $rent->getRentedFrom(),
+                "rentedUntil" => $rent->getRentedUntil(),
+                "approved" => $rent->isApproved(),
+                "user" => $rent->getUser()->getFirstName(),
+                "car" => [
+                    $rent->getCar()->getBrand(), 
+                    $rent->getCar()->getModel()
+                ]
+            ];
+        }
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
+
 }
