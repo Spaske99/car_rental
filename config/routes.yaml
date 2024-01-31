@@ -63,3 +63,8 @@ get_all_rents:
     path: '/rents'
     controller: 'App\Controller\RentController::getAll'
     methods: GET
+
+get_rent:
+    path: '/rent/{id}'
+    controller: 'App\Controller\RentController::get'
+    methods: GET

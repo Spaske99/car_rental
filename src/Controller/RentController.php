@@ -45,13 +45,18 @@ class RentController extends AbstractController
         $data = [];
         foreach($rents as $rent) {
             $data[] = [
-                "rentedFrom" => $rent->getRentedFrom(),
-                "rentedUntil" => $rent->getRentedUntil(),
-                "approved" => $rent->isApproved(),
-                "user" => $rent->getUser()->getFirstName(),
-                "car" => [
-                    $rent->getCar()->getBrand(), 
-                    $rent->getCar()->getModel()
+                'id' => $rent->getId(),
+                'rentedFrom' => $rent->getRentedFrom(),
+                'rentedUntil' => $rent->getRentedUntil(),
+                'approved' => $rent->isApproved(),
+                'user' => [
+                    'firstName' => $rent->getUser()->getFirstName(),
+                    'lastName' => $rent->getUser()->getLastName(),
+                    'email' => $rent->getUser()->getEmail()
+                ],
+                'car' => [
+                    'brand' => $rent->getCar()->getBrand(), 
+                    'model' => $rent->getCar()->getModel()
                 ]
             ];
         }
@@ -59,4 +64,26 @@ class RentController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
     }
 
+    public function get($id): JsonResponse
+    {
+        $rent = $this->rentRepository->find($id);
+
+        $data[] = [
+            'id' => $rent->getId(),
+            'rentedFrom' => $rent->getRentedFrom(),
+            'rentedUntil' => $rent->getRentedUntil(),
+            'approved' => $rent->isApproved(),
+            'user' => [
+                'firstName' => $rent->getUser()->getFirstName(),
+                'lastName' => $rent->getUser()->getLastName(),
+                'email' => $rent->getUser()->getEmail()
+            ],
+            'car' => [
+                'brand' => $rent->getCar()->getBrand(), 
+                'model' => $rent->getCar()->getModel()
+            ]
+        ];
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
 }
