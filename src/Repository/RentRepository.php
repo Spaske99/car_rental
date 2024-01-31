@@ -34,18 +34,28 @@ class RentRepository extends ServiceEntityRepository
 
     public function add($rentedFrom, $rentedUntil, $approved, $userId, $carId)
     {
-        $user = $this->manager->getRepository(User::class)->find($userId);
-        $car = $this->manager->getRepository(Car::class)->find($carId);
         $rent = new Rent();
 
         $rent
             ->setRentedFrom(new DateTime($rentedFrom))
             ->setRentedUntil(new DateTime($rentedUntil))
             ->setApproved($approved)
-            ->setUser($user)
-            ->setCar($car);
+            ->setUser($this->manager->getRepository(User::class)->find($userId))
+            ->setCar($this->manager->getRepository(Car::class)->find($carId));
 
         $this->manager->persist($rent);
         $this->manager->flush();
+    }
+
+    public function update(Rent $rent, $rentedFrom, $rentedUntil, $car): Rent
+    {
+        empty($data['rentedFrom'])? true : $rent->setRentedFrom(new DateTime($rentedFrom));
+        empty($data['rentedUntil'])? true : $rent->setRentedUntil(new DateTime($rentedUntil));
+        empty($data['car'])? true : $rent->setCar($this->manager->getRepository(Car::class)->find($car));
+
+        $this->manager->persist($rent);
+        $this->manager->flush();
+
+        return $rent;
     }
 }

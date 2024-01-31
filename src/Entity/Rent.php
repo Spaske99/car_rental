@@ -95,4 +95,17 @@ class Rent
 
         return $this;
     }
+
+    public function jsonSerialize(): array
+    {
+        return 
+        [
+            'rentedFrom' => $this->getRentedFrom(),
+            'rentedUntil' => $this->getRentedUntil(),
+            'car' => [
+                'brand' => $this->getCar()->getBrand(), 
+                'model' => $this->getCar()->getModel()
+            ]
+        ];
+    }
 }

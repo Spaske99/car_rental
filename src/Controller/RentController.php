@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class RentController extends AbstractController
 {
@@ -29,7 +28,7 @@ class RentController extends AbstractController
         $user = $rent['user'];
         $car = $rent['car'];
 
-        if (empty($rantedFrom) || empty($rentedUntil || empty($approved) || empty($user) || empty($car))) {
+        if (empty($rantedFrom) || empty($rentedUntil) || empty($approved) || empty($user) || empty($car)) {
             throw new BadRequestHttpException('Expecting mandatory parameters!');
         }
 
@@ -85,5 +84,19 @@ class RentController extends AbstractController
         ];
 
         return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $rent = $this->rentRepository->find($id);
+        $data = json_decode($request->getContent(), true);
+
+        $rentedFrom = $data['rentedFrom'];
+        $rentedUntil = $data['rentedUntil'];
+        $car = $data['car'];
+
+        $uodatedRent = $this->rentRepository->update($rent, $rentedFrom, $rentedUntil, $car);
+
+        return new JsonResponse($uodatedRent->jsonSerialize(), Response::HTTP_OK);
     }
 }
