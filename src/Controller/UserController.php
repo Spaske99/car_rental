@@ -3,101 +3,105 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends AbstractController
 {
     private $userRepository;
+    private $userService;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, UserService $userService)
     {
         $this->userRepository = $userRepository;
+        $this->userService = $userService;
     }
 
     public function add(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        try {
+            $data = json_decode($request->getContent(), true);
 
-        $firstName = $data['firstName'];
-        $lastName = $data['lastName'];
-        $email = $data['email'];
-        $password = $data['password'];
-        $role = $data['role'];
+            if (empty($data['firstName']) || empty($data['lastName']) || empty($data['email']) || empty($data['password']) || empty($data['role'])) {
+                throw new BadRequestHttpException('Expecting mandatory parameters!');
+            }
 
-        if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($role)) {
-            throw new BadRequestHttpException('Expecting mandatory parameters!');
+            $this->userService->add($data);
+
+            return new JsonResponse('User added!', Response::HTTP_CREATED);
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
-
-        $this->userRepository->add($firstName, $lastName, $email, $password, $role);
-
-        return new JsonResponse('User added!', Response::HTTP_CREATED);
     }
 
     public function getAll(): JsonResponse
     {
-        $users = $this->userRepository->findAll();
-        $data = [];
+        try {
+            $users = $this->userRepository->findAll();
 
-        foreach ($users as $user) {
-            $data[] = [
-                'id' => $user->getId(),
-                'firstName' => $user->getFirstName(),
-                'lastName' => $user->getLastName(),
-                'email' => $user->getEmail(),
-                'password' => $user->getPassword(),
-                'created' => $user->getCreated(),
-                'updated' => $user->getUpdated(),
-                'role' => $user->getRole()->getRoleType()
-            ];
+            if (empty($users)) {
+                throw new NotFoundHttpException('No users found');
+            }
+
+            return new JsonResponse($this->userService->getAll($users), Response::HTTP_OK);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
-
-        return new JsonResponse($data, Response::HTTP_OK);
     }
 
     public function get($id): JsonResponse
     {
-        $user = $this->userRepository->find($id);
+        try {
+            $user = $this->userRepository->find($id);  
 
-        $data[] = [
-            'id' => $user->getId(),
-            'firstName' => $user->getFirstName(),
-            'lastName' => $user->getLastName(),
-            'email' => $user->getEmail(),
-            'password' => $user->getPassword(),
-            'created' => $user->getCreated(),
-            'updated' => $user->getUpdated(),
-            'role' => $user->getRole()->getRoleType()
-        ];
+            if ($user === null) {
+                throw new NotFoundHttpException('User not found');
+            }        
 
-        return new JsonResponse($data, Response::HTTP_OK);
+            return new JsonResponse($this->userService->get($user), Response::HTTP_OK);
+        } catch (NotFoundHttpException $e) {      
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
     }
 
     public function update($id, Request $request): JsonResponse
     {
-        $user = $this->userRepository->find($id);
-        $data = json_decode($request->getContent(), true);
+        try {
+            $user = $this->userRepository->find($id);
 
-        empty($data['firstName']) ? true : $user->setFirstName($data['firstName']);
-        empty($data['lastName']) ? true : $user->setLastName($data['lastName']);
-        empty($data['email']) ? true : $user->setEmail($data['email']);
-        empty($data['password']) ? true : $user->setPassword($data['password']);
+            if ($user === null) {
+                throw new NotFoundHttpException('User not found');
+            }
+            $data = json_decode($request->getContent(), true);
 
-        $updatedUser = $this->userRepository->update($user);
-        
-        return new JsonResponse($updatedUser->jsonSerialize(), Response::HTTP_OK);
+            $updatedUser = $this->userService->update($user, $data);  
+
+            return new JsonResponse($updatedUser, Response::HTTP_OK);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
     }
 
-    public function delete($id): jsonResponse
+    public function delete($id): JsonResponse
     {
-        $user = $this->userRepository->find($id);
+        try {
+            $user = $this->userRepository->find($id);
 
-        $this->userRepository->delete($user);
-        
-        return new JsonResponse('User deleted!', Response::HTTP_NO_CONTENT);
+            if ($user === null) {
+                throw new NotFoundHttpException('User not found');
+            }
+
+            $this->userRepository->delete($user);      
+
+            return new JsonResponse('User deleted!', Response::HTTP_NO_CONTENT);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NO_CONTENT);
+        }
     }
 }
 
