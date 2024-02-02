@@ -45,8 +45,8 @@ class RentController extends AbstractController
         foreach($rents as $rent) {
             $data[] = [
                 'id' => $rent->getId(),
-                'rentedFrom' => $rent->getRentedFrom(),
-                'rentedUntil' => $rent->getRentedUntil(),
+                'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
+                'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
                 'approved' => $rent->isApproved(),
                 'user' => [
                     'firstName' => $rent->getUser()->getFirstName(),
@@ -69,8 +69,8 @@ class RentController extends AbstractController
 
         $data[] = [
             'id' => $rent->getId(),
-            'rentedFrom' => $rent->getRentedFrom(),
-            'rentedUntil' => $rent->getRentedUntil(),
+            'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
+            'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
             'approved' => $rent->isApproved(),
             'user' => [
                 'firstName' => $rent->getUser()->getFirstName(),

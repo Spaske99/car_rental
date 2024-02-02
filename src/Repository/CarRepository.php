@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Car;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<Car>
@@ -19,27 +19,14 @@ class CarRepository extends ServiceEntityRepository
 {
     private $manager;
 
-    public function __construct
-    (
-        ManagerRegistry $registry,
-        EntityManagerInterface $manager
-    )
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $manager)
     {
         parent::__construct($registry, Car::class);
         $this->manager = $manager;
     }
 
-    public function add($brand, $model, $dailyPrice, $description, $image)
-    {
-        $car = new car();
-       
-        $car
-            ->setBrand($brand)
-            ->setModel($model)
-            ->setDailyPrice($dailyPrice)
-            ->setDescription($description)
-            ->setImage($image);
-        
+    public function add(Car $car)
+    {      
         $this->manager->persist($car);
         $this->manager->flush();
     }
