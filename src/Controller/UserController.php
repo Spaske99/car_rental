@@ -60,7 +60,7 @@ class UserController extends AbstractController
             $user = $this->userRepository->find($id);  
 
             if ($user === null) {
-                throw new NotFoundHttpException('User not found ');
+                throw new NotFoundHttpException('User not found');
             }        
 
             return new JsonResponse($this->userService->get($user), Response::HTTP_OK);

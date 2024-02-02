@@ -3,109 +3,105 @@
 namespace App\Controller;
 
 use App\Repository\RentRepository;
+use App\Service\RentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RentController extends AbstractController
 {
     public $rentRepository;
+    public $rentService;
 
-    public function __construct(RentRepository $rentRepository)
+    public function __construct(RentRepository $rentRepository, RentService $rentService)
     {
         $this->rentRepository = $rentRepository;
+        $this->rentService = $rentService;
     }
 
     public function add(Request $request): JsonResponse
     {
-        $rent = json_decode($request->getContent(), true);
+        try {
+            $data = json_decode($request->getContent(), true);
 
-        $rantedFrom = $rent['rentedFrom'];
-        $rentedUntil = $rent['rentedUntil'];
-        $approved = $rent['approved'];
-        $user = $rent['user'];
-        $car = $rent['car'];
+            if (empty($data['rentedFrom']) || empty($data['rentedUntil']) || empty($data['approved']) || empty($data['user']) || empty($data['car'])) {
+                throw new BadRequestHttpException('Expecting mandatory parameters!');
+            }
 
-        if (empty($rantedFrom) || empty($rentedUntil) || empty($approved) || empty($user) || empty($car)) {
-            throw new BadRequestHttpException('Expecting mandatory parameters!');
+            $this->rentService->add($data);
+            
+            return new JsonResponse('Rent added!', Response::HTTP_CREATED);
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
-
-        $this->rentRepository->add($rantedFrom, $rentedUntil, $approved, $user, $car);
-        
-        return new JsonResponse('Rent added!', Response::HTTP_CREATED);
     }
 
     public function getAll(): JsonResponse
     {
-        $rents = $this->rentRepository->findAll();
+        try {
+            $rents = $this->rentRepository->findAll();
 
-        $data = [];
-        foreach($rents as $rent) {
-            $data[] = [
-                'id' => $rent->getId(),
-                'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
-                'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
-                'approved' => $rent->isApproved(),
-                'user' => [
-                    'firstName' => $rent->getUser()->getFirstName(),
-                    'lastName' => $rent->getUser()->getLastName(),
-                    'email' => $rent->getUser()->getEmail()
-                ],
-                'car' => [
-                    'brand' => $rent->getCar()->getBrand(), 
-                    'model' => $rent->getCar()->getModel()
-                ]
-            ];
+            if (empty($rents)) {
+                throw new NotFoundHttpException('No rents found');
+            }
+
+            return new JsonResponse($this->rentService->getAll($rents), Response::HTTP_OK);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
-
-        return new JsonResponse($data, Response::HTTP_OK);
     }
 
     public function get($id): JsonResponse
     {
-        $rent = $this->rentRepository->find($id);
+        try {
+            $rent = $this->rentRepository->find($id);
 
-        $data[] = [
-            'id' => $rent->getId(),
-            'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
-            'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
-            'approved' => $rent->isApproved(),
-            'user' => [
-                'firstName' => $rent->getUser()->getFirstName(),
-                'lastName' => $rent->getUser()->getLastName(),
-                'email' => $rent->getUser()->getEmail()
-            ],
-            'car' => [
-                'brand' => $rent->getCar()->getBrand(), 
-                'model' => $rent->getCar()->getModel()
-            ]
-        ];
-
-        return new JsonResponse($data, Response::HTTP_OK);
+            if ($rent === null) {
+                throw new NotFoundHttpException('Rent not found');
+            }
+    
+            return new JsonResponse($this->rentService->get($rent), Response::HTTP_OK);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
     }
 
     public function update(Request $request, $id): JsonResponse
     {
-        $rent = $this->rentRepository->find($id);
-        $data = json_decode($request->getContent(), true);
+        try {
+            $rent = $this->rentRepository->find($id);
 
-        $rentedFrom = $data['rentedFrom'];
-        $rentedUntil = $data['rentedUntil'];
-        $car = $data['car'];
+            if ($rent === null) {
+                throw new NotFoundHttpException('Rent not found');
+            }
 
-        $uodatedRent = $this->rentRepository->update($rent, $rentedFrom, $rentedUntil, $car);
+            $data = json_decode($request->getContent(), true);
 
-        return new JsonResponse($uodatedRent->jsonSerialize(), Response::HTTP_OK);
+            $updatedRent = $this->rentService->update($rent, $data);
+
+            return new JsonResponse($updatedRent, Response::HTTP_OK);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
     }
 
     public function delete($id): jsonResponse
     {
-        $rent = $this->rentRepository->find($id);
+        try {
+            $rent = $this->rentRepository->find($id);
 
-        $this->rentRepository->delete($rent);
-        
-        return new JsonResponse('Rent deleted!', Response::HTTP_NO_CONTENT);
+            if ($rent === null) {
+                throw new NotFoundHttpException('Rent not found');
+            }
+
+            $this->rentRepository->delete($rent);
+            
+            return new JsonResponse('Rent deleted!', Response::HTTP_NO_CONTENT);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NO_CONTENT);
+        }
     }
 }
