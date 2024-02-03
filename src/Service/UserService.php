@@ -26,8 +26,6 @@ class UserService
         $password = $data['password'];
         $role = $data['role'];
 
-        $role = $this->manager->getRepository(Role::class)->find($role);
-
         $user = new User();
 
         $user
@@ -35,7 +33,7 @@ class UserService
             ->setLastName($lastName)
             ->setEmail($email)
             ->setPassword($password)
-            ->setRole($role);
+            ->setRole($this->manager->getRepository(Role::class)->find($role));
 
         $this->userRepository->add($user);
     }

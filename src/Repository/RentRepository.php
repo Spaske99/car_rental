@@ -2,13 +2,10 @@
 
 namespace App\Repository;
 
-use App\Entity\Car;
 use App\Entity\Rent;
-use App\Entity\User;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<Rent>
@@ -22,17 +19,13 @@ class RentRepository extends ServiceEntityRepository
 {
     private $manager;
 
-    public function __construct
-    (
-        ManagerRegistry $registry, 
-        EntityManagerInterface $manager
-    )
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $manager)
     {
         parent::__construct($registry, Rent::class);
         $this->manager = $manager;
     }
 
-    public function add($rent)
+    public function add(Rent $rent)
     {
         $this->manager->persist($rent);
         $this->manager->flush();

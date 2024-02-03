@@ -66,10 +66,10 @@ class CarService
 
     public function update($car, $data)
     {
-        empty($data['brand'])? true : $car->setBrand($data['brand']);
-        empty($data['model'])? true : $car->setModel($data['model']);
-        empty($data['dailyPrice'])? true : $car->setDailyPrice($data['dailyPrice']);
-        empty($data['description'])? true : $car->setDescription($data['description']);
+        empty($data['brand']) ? true : $car->setBrand($data['brand']);
+        empty($data['model']) ? true : $car->setModel($data['model']);
+        empty($data['dailyPrice']) ? true : $car->setDailyPrice($data['dailyPrice']);
+        empty($data['description']) ? true : $car->setDescription($data['description']);
 
         $updatedCar = $this->carRepository->update($car);
         

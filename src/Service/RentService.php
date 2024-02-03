@@ -43,23 +43,24 @@ class RentService
     public function getAll($rents)
     {
         $data = [];
-            foreach($rents as $rent) {
-                $data[] = [
-                    'id' => $rent->getId(),
-                    'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
-                    'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
-                    'approved' => $rent->isApproved(),
-                    'user' => [
-                        'firstName' => $rent->getUser()->getFirstName(),
-                        'lastName' => $rent->getUser()->getLastName(),
-                        'email' => $rent->getUser()->getEmail()
-                    ],
-                    'car' => [
-                        'brand' => $rent->getCar()->getBrand(), 
-                        'model' => $rent->getCar()->getModel()
-                    ]
-                ];
-            }
+
+        foreach($rents as $rent) {
+            $data[] = [
+                'id' => $rent->getId(),
+                'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
+                'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
+                'approved' => $rent->isApproved(),
+                'user' => [
+                    'firstName' => $rent->getUser()->getFirstName(),
+                    'lastName' => $rent->getUser()->getLastName(),
+                    'email' => $rent->getUser()->getEmail()
+                ],
+                'car' => [
+                    'brand' => $rent->getCar()->getBrand(), 
+                    'model' => $rent->getCar()->getModel()
+                ]
+            ];
+        }
 
         return $data;
     }
@@ -87,9 +88,9 @@ class RentService
 
     public function update($rent, $data)
     {
-        empty($data['rentedFrom'])? true : $rent->setRentedFrom(new DateTime($data['rentedFrom']));
-        empty($data['rentedUntil'])? true : $rent->setRentedUntil(new DateTime($data['rentedUntil']));
-        empty($data['car'])? true : $rent->setCar($this->manager->getRepository(Car::class)->find($data['car']));
+        empty($data['rentedFrom']) ? true : $rent->setRentedFrom(new DateTime($data['rentedFrom']));
+        empty($data['rentedUntil']) ? true : $rent->setRentedUntil(new DateTime($data['rentedUntil']));
+        empty($data['car']) ? true : $rent->setCar($this->manager->getRepository(Car::class)->find($data['car']));
 
         $updatedRent = $this->rentRepository->update($rent);
         

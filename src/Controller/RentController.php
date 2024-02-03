@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RentController extends AbstractController
 {
-    public $rentRepository;
-    public $rentService;
+    private $rentRepository;
+    private $rentService;
 
     public function __construct(RentRepository $rentRepository, RentService $rentService)
     {
