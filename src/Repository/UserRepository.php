@@ -25,7 +25,7 @@ class UserRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function add(User $user)
+    public function create(User $user)
     {
         $this->manager->persist($user);
         $this->manager->flush();

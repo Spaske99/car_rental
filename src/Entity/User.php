@@ -139,15 +139,4 @@ class User
 
         return $this;
     }
-
-    public function jsonSerialize(): array
-    {
-        return 
-        [
-            'firstName' => $this->getFirstName(),
-            'lastName' => $this->getLastName(),
-            'email' => $this->getEmail(),
-            'password' => $this->getPassword()
-        ];
-    }
 }

@@ -22,7 +22,8 @@ class UserController extends AbstractController
         $this->userService = $userService;
     }
 
-    public function add(Request $request): JsonResponse
+    // CREATE USER
+    public function create(Request $request): JsonResponse
     {
         try {
             $data = json_decode($request->getContent(), true);
@@ -31,14 +32,15 @@ class UserController extends AbstractController
                 throw new BadRequestHttpException('Expecting mandatory parameters!');
             }
 
-            $this->userService->add($data);
+            $this->userService->create($data);
 
-            return new JsonResponse('User added.', Response::HTTP_CREATED);
+            return new JsonResponse('User created.', Response::HTTP_CREATED);
         } catch (BadRequestHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
 
+    // GET_ALL USERS
     public function getAll(): JsonResponse
     {
         try {
@@ -54,6 +56,7 @@ class UserController extends AbstractController
         }
     }
 
+    // GET USER
     public function get($id): JsonResponse
     {
         try {
@@ -69,6 +72,7 @@ class UserController extends AbstractController
         }
     }
 
+    // UPDATE USER
     public function update($id, Request $request): JsonResponse
     {
         try {
@@ -88,6 +92,7 @@ class UserController extends AbstractController
         }
     }
 
+    // DELETE USER
     public function delete($id): JsonResponse
     {
         try {
