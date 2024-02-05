@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Rent;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -84,5 +85,16 @@ class UserService
         $updatedUser = $this->userRepository->update($user);
         
         return $updatedUser->jsonSerialize();
+    }
+
+    public function delete($user)
+    {
+        $rents = $this->manager->getRepository(Rent::class)->findByUser($user);
+
+        foreach ($rents as $rent) {
+            $this->manager->remove($rent);
+        }
+
+        $this->userRepository->delete($user);
     }
 }

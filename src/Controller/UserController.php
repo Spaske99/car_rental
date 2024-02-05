@@ -33,7 +33,7 @@ class UserController extends AbstractController
 
             $this->userService->add($data);
 
-            return new JsonResponse('User added!', Response::HTTP_CREATED);
+            return new JsonResponse('User added.', Response::HTTP_CREATED);
         } catch (BadRequestHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
@@ -45,7 +45,7 @@ class UserController extends AbstractController
             $users = $this->userRepository->findAll();
 
             if (empty($users)) {
-                throw new NotFoundHttpException('No users found');
+                throw new NotFoundHttpException('No users found!');
             }
 
             return new JsonResponse($this->userService->getAll($users), Response::HTTP_OK);
@@ -60,7 +60,7 @@ class UserController extends AbstractController
             $user = $this->userRepository->find($id);  
 
             if ($user === null) {
-                throw new NotFoundHttpException('User not found');
+                throw new NotFoundHttpException("User with ID $id not found!");
             }        
 
             return new JsonResponse($this->userService->get($user), Response::HTTP_OK);
@@ -75,7 +75,7 @@ class UserController extends AbstractController
             $user = $this->userRepository->find($id);
 
             if ($user === null) {
-                throw new NotFoundHttpException('User not found');
+                throw new NotFoundHttpException("User with ID $id not found!");
             }
             
             $data = json_decode($request->getContent(), true);
@@ -94,12 +94,12 @@ class UserController extends AbstractController
             $user = $this->userRepository->find($id);
 
             if ($user === null) {
-                throw new NotFoundHttpException('User not found');
+                throw new NotFoundHttpException("User with ID $id not found!");
             }
 
-            $this->userRepository->delete($user);      
+            $this->userService->delete($user);      
 
-            return new JsonResponse('User deleted!', Response::HTTP_NO_CONTENT);
+            return new JsonResponse('User deleted.', Response::HTTP_NO_CONTENT);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NO_CONTENT);
         }

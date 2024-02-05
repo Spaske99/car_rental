@@ -33,7 +33,7 @@ class RentController extends AbstractController
 
             $this->rentService->add($data);
             
-            return new JsonResponse('Rent added!', Response::HTTP_CREATED);
+            return new JsonResponse('Rent added.', Response::HTTP_CREATED);
         } catch (BadRequestHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
@@ -45,7 +45,7 @@ class RentController extends AbstractController
             $rents = $this->rentRepository->findAll();
 
             if (empty($rents)) {
-                throw new NotFoundHttpException('No rents found');
+                throw new NotFoundHttpException('No rents found!');
             }
 
             return new JsonResponse($this->rentService->getAll($rents), Response::HTTP_OK);
@@ -60,7 +60,7 @@ class RentController extends AbstractController
             $rent = $this->rentRepository->find($id);
 
             if ($rent === null) {
-                throw new NotFoundHttpException('Rent not found');
+                throw new NotFoundHttpException("Rent with ID $id not found!");
             }
     
             return new JsonResponse($this->rentService->get($rent), Response::HTTP_OK);
@@ -75,7 +75,7 @@ class RentController extends AbstractController
             $rent = $this->rentRepository->find($id);
 
             if ($rent === null) {
-                throw new NotFoundHttpException('Rent not found');
+                throw new NotFoundHttpException("Rent with ID $id not found!");
             }
 
             $data = json_decode($request->getContent(), true);
@@ -94,12 +94,12 @@ class RentController extends AbstractController
             $rent = $this->rentRepository->find($id);
 
             if ($rent === null) {
-                throw new NotFoundHttpException('Rent not found');
+                throw new NotFoundHttpException("Rent with ID $id not found!");
             }
 
             $this->rentRepository->delete($rent);
             
-            return new JsonResponse('Rent deleted!', Response::HTTP_NO_CONTENT);
+            return new JsonResponse('Rent deleted.', Response::HTTP_NO_CONTENT);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NO_CONTENT);
         }
