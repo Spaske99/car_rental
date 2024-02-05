@@ -33,7 +33,7 @@ class CarController extends AbstractController
             
             $this->carService->add($data);
 
-            return new JsonResponse('Car added!', Response::HTTP_CREATED);  
+            return new JsonResponse('Car added.', Response::HTTP_CREATED);  
         } catch (BadRequestHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);  
         }
@@ -45,7 +45,7 @@ class CarController extends AbstractController
             $cars = $this->carRepository->findAll();
 
             if (empty($cars)) {
-                throw new NotFoundHttpException('No cars found');
+                throw new NotFoundHttpException('No cars found!');
             }
 
             return new JsonResponse($this->carService->getAll($cars), Response::HTTP_OK);
@@ -60,7 +60,7 @@ class CarController extends AbstractController
             $car = $this->carRepository->find($id);
 
             if ($car === null) {
-                throw new NotFoundHttpException('Car not found');
+                throw new NotFoundHttpException("Car with ID $id not found!");
             } 
 
             return new JsonResponse($this->carService->get($car), Response::HTTP_OK);
@@ -75,7 +75,7 @@ class CarController extends AbstractController
             $car = $this->carRepository->find($id);
 
             if ($car === null) {
-                throw new NotFoundHttpException('Car not found');
+                throw new NotFoundHttpException("Car with ID $id not found!");
             }
             
             $data = json_decode($request->getContent(), true);
@@ -94,12 +94,12 @@ class CarController extends AbstractController
             $car = $this->carRepository->find($id);
 
             if ($car === null) {
-                throw new NotFoundHttpException('Car not found');
+                throw new NotFoundHttpException("Car with ID $id not found!");
             }
 
-            $this->carRepository->delete($car);
+            $this->carService->delete($car);
 
-            return new JsonResponse('Car deleted!', Response::HTTP_NO_CONTENT);
+            return new JsonResponse('Car deleted.', Response::HTTP_NO_CONTENT);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NO_CONTENT);
         }

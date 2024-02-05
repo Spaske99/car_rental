@@ -3,14 +3,18 @@
 namespace App\Service;
 
 use App\Entity\Car;
+use App\Entity\Rent;
 use App\Repository\CarRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class CarService 
 {
+    private $manager;
     private $carRepository;
 
-    public function __construct(CarRepository $carRepository)
+    public function __construct(EntityManagerInterface $manager, CarRepository $carRepository)
     {
+        $this->manager = $manager;
         $this->carRepository = $carRepository;
     }
 
@@ -74,5 +78,16 @@ class CarService
         $updatedCar = $this->carRepository->update($car);
         
         return $updatedCar->jsonSerialize();
+    }
+
+    public function delete($car) 
+    {
+        $rents = $this->manager->getRepository(Rent::class)->findByCar($car);
+
+        foreach ($rents as $rent) {
+            $this->manager->remove($rent);
+        }
+
+        $this->carRepository->delete($car);
     }
 }
