@@ -28,11 +28,11 @@ class UserDTO
     public function jsonSerialize(): mixed
     {
         return [
-            "id" => $this->id,
+            "id"        => $this->id,
             'firstName' => $this->firstName,
-            'lastName' => $this->lastName,
-            'email' => $this->email,
-            'password' => $this->password
+            'lastName'  => $this->lastName,
+            'email'     => $this->email,
+            'password'  => $this->password
         ];
     }
 }

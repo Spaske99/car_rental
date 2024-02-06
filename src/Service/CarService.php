@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\DTO\CarDTO;
 use App\Entity\Car;
 use App\Entity\Rent;
 use App\Repository\CarRepository;
@@ -43,13 +44,7 @@ class CarService
         $data = [];
             
         foreach ($cars as $car) {
-            $data[] = [
-                "id" => $car->getId(),
-                "brand" => $car->getBrand(),
-                "model" => $car->getModel(),
-                "dailyPrice" => $car->getDailyPrice(),
-                "description" => $car->getDescription(),
-            ];
+            $data[] = $this->getCarDTO($car);
         }
 
         return $data;
@@ -57,15 +52,7 @@ class CarService
 
     public function get($car)
     {
-        $data = [
-            "id" => $car->getId(),
-            "brand" => $car->getBrand(),
-            "model" => $car->getModel(),
-            "dailyPrice" => $car->getDailyPrice(),
-            "description" => $car->getDescription(),
-        ];
-
-        return $data;
+        return $this->getCarDTO($car);
     }
 
     public function update($car, $data)
@@ -75,9 +62,9 @@ class CarService
         empty($data['dailyPrice']) ? true : $car->setDailyPrice($data['dailyPrice']);
         empty($data['description']) ? true : $car->setDescription($data['description']);
 
-        $updatedCar = $this->carRepository->update($car);
+        $this->carRepository->update($car);
         
-        return $updatedCar->jsonSerialize();
+        return $this->getCarDTO($car)->jsonSerialize();
     }
 
     public function delete($car) 
@@ -89,5 +76,17 @@ class CarService
         }
 
         $this->carRepository->delete($car);
+    }
+
+    public function getCarDTO($car) 
+    {
+        return new CarDTO(
+            $car->getId(),
+            $car->getBrand(),
+            $car->getModel(),
+            $car->getDailyPrice(),
+            $car->getDescription(),
+            // $car->getImage()     RESI PROBLEM SA TIPOM PODATAKA!
+        );
     }
 }
