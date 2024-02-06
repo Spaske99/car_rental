@@ -19,7 +19,8 @@ class CarService
         $this->carRepository = $carRepository;
     }
 
-    public function add($data)
+    // CREATE CAR
+    public function create($data)
     {
         $brand = $data['brand'];
         $model = $data['model'];
@@ -39,22 +40,25 @@ class CarService
         $this->carRepository->add($car);
     }
 
+    // GET_ALL CARS
     public function getAll($cars)
     {
         $data = [];
             
         foreach ($cars as $car) {
-            $data[] = $this->getCarDTO($car);
+            $data[] = $this->getCarDTO($car)->jsonSerialize();
         }
 
         return $data;
     }
 
+    // GET CAR
     public function get($car)
     {
-        return $this->getCarDTO($car);
+        return $this->getCarDTO($car)->jsonSerialize();
     }
 
+    // UPDATE CAR
     public function update($car, $data)
     {
         empty($data['brand']) ? true : $car->setBrand($data['brand']);
@@ -67,6 +71,7 @@ class CarService
         return $this->getCarDTO($car)->jsonSerialize();
     }
 
+    // DELETE CAR AND ASSOCIATED RENTS
     public function delete($car) 
     {
         $rents = $this->manager->getRepository(Rent::class)->findByCar($car);
@@ -78,7 +83,8 @@ class CarService
         $this->carRepository->delete($car);
     }
 
-    public function getCarDTO($car) 
+    // CAR DTO
+    public function getCarDTO($car): CarDTO
     {
         return new CarDTO(
             $car->getId(),

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\DTO\RentDTO;
 use App\Entity\Car;
 use App\Entity\Rent;
 use App\Entity\User;
@@ -20,7 +21,8 @@ class RentService
         $this->rentRepository = $rentRepository;
     }
 
-    public function add($data)
+    // CREATE RENT
+    public function create($data)
     {
         $rentedFrom = $data['rentedFrom'];
         $rentedUntil = $data['rentedUntil'];
@@ -40,60 +42,46 @@ class RentService
         $this->rentRepository->add($rent);
     }
 
+    // GET_ALL RENTS
     public function getAll($rents)
     {
         $data = [];
 
         foreach($rents as $rent) {
-            $data[] = [
-                'id' => $rent->getId(),
-                'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
-                'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
-                'approved' => $rent->isApproved(),
-                'user' => [
-                    'firstName' => $rent->getUser()->getFirstName(),
-                    'lastName' => $rent->getUser()->getLastName(),
-                    'email' => $rent->getUser()->getEmail()
-                ],
-                'car' => [
-                    'brand' => $rent->getCar()->getBrand(), 
-                    'model' => $rent->getCar()->getModel()
-                ]
-            ];
+            $data[] = $this->getRentDTO($rent)->jsonSerialize();
         }
 
         return $data;
     }
 
+    // GET RENT
     public function get($rent)
     {
-        $data = [
-            'id' => $rent->getId(),
-            'rentedFrom' => $rent->getRentedFrom()->format('Y-m-d H:i:s'),
-            'rentedUntil' => $rent->getRentedUntil()->format('Y-m-d H:i:s'),
-            'approved' => $rent->isApproved(),
-            'user' => [
-                'firstName' => $rent->getUser()->getFirstName(),
-                'lastName' => $rent->getUser()->getLastName(),
-                'email' => $rent->getUser()->getEmail()
-            ],
-            'car' => [
-                'brand' => $rent->getCar()->getBrand(), 
-                'model' => $rent->getCar()->getModel()
-            ]
-        ];
-
-        return $data;
+        return $this->getRentDTO($rent)->jsonSerialize();
     }
 
+    // UPDATE RENT
     public function update($rent, $data)
     {
         empty($data['rentedFrom']) ? true : $rent->setRentedFrom(new DateTime($data['rentedFrom']));
         empty($data['rentedUntil']) ? true : $rent->setRentedUntil(new DateTime($data['rentedUntil']));
         empty($data['car']) ? true : $rent->setCar($this->manager->getRepository(Car::class)->find($data['car']));
 
-        $updatedRent = $this->rentRepository->update($rent);
+        $this->rentRepository->update($rent);
         
-        return $updatedRent->jsonSerialize();
+        return $this->getRentDTO($rent)->jsonSerialize();
+    }
+
+    // RENT DTO
+    public function getRentDTO($rent): RentDTO
+    {
+        return new RentDTO(
+            $rent->getId(),
+            $rent->getRentedFrom(),
+            $rent->getRentedUntil(),
+            $rent->isApproved(),
+            $rent->getUser(),
+            $rent->getCar()
+        );
     }
 }

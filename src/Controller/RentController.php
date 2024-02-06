@@ -22,7 +22,8 @@ class RentController extends AbstractController
         $this->rentService = $rentService;
     }
 
-    public function add(Request $request): JsonResponse
+    // CREATE RENT
+    public function create(Request $request): JsonResponse
     {
         try {
             $data = json_decode($request->getContent(), true);
@@ -31,14 +32,15 @@ class RentController extends AbstractController
                 throw new BadRequestHttpException('Expecting mandatory parameters!');
             }
 
-            $this->rentService->add($data);
+            $this->rentService->create($data);
             
-            return new JsonResponse('Rent added.', Response::HTTP_CREATED);
+            return new JsonResponse('Rent created.', Response::HTTP_CREATED);
         } catch (BadRequestHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
 
+    // GET_ALL RENTS
     public function getAll(): JsonResponse
     {
         try {
@@ -54,6 +56,7 @@ class RentController extends AbstractController
         }
     }
 
+    // GET RENT
     public function get($id): JsonResponse
     {
         try {
@@ -69,6 +72,7 @@ class RentController extends AbstractController
         }
     }
 
+    // UPDATE RENT
     public function update(Request $request, $id): JsonResponse
     {
         try {
@@ -88,6 +92,7 @@ class RentController extends AbstractController
         }
     }
 
+    // DELETE RENT
     public function delete($id): jsonResponse
     {
         try {

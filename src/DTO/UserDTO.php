@@ -12,27 +12,26 @@ class UserDTO
      * @param string lastName
      * @param string email
      * @param string password
-     * @param string role
+     * @param Role role
      */
 
     public function __construct(
-        public readonly int  $id,
+        public readonly int     $id,
         public readonly string  $firstName,
         public readonly string  $lastName,
         public readonly string  $email,
         public readonly string  $password,
-        public readonly string  $role
+        public readonly Role  $role
     ) {
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             "id"        => $this->id,
             'firstName' => $this->firstName,
             'lastName'  => $this->lastName,
-            'email'     => $this->email,
-            'password'  => $this->password
+            'email'     => $this->email
         ];
     }
 }

@@ -22,7 +22,8 @@ class CarController extends AbstractController
         $this->carService = $carService;
     }
 
-    public function add(Request $request): JsonResponse
+    // CREATE CAR
+    public function create(Request $request): JsonResponse
     {
         try {
             $data = json_decode($request->getContent(), true);
@@ -31,14 +32,15 @@ class CarController extends AbstractController
                 throw new BadRequestHttpException('Expecting mandatory parameters!');
             }
             
-            $this->carService->add($data);
+            $this->carService->create($data);
 
-            return new JsonResponse('Car added.', Response::HTTP_CREATED);  
+            return new JsonResponse('Car created.', Response::HTTP_CREATED);  
         } catch (BadRequestHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);  
         }
     }
 
+    // GET_ALL CARS
     public function getAll(): JsonResponse
     {
         try {
@@ -54,6 +56,7 @@ class CarController extends AbstractController
         }
     }
 
+    // GET CAR
     public function get($id): JsonResponse
     {
         try {
@@ -69,6 +72,7 @@ class CarController extends AbstractController
         }
     }
 
+    // UPDATE CAR
     public function update(Request $request, $id): JsonResponse
     {
         try {
@@ -88,6 +92,7 @@ class CarController extends AbstractController
         }
     }
 
+    // DELETE CAR
     public function delete($id): JsonResponse
     {
         try {

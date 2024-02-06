@@ -16,19 +16,18 @@ class CarDTO
      */
 
     public function __construct(
-        public readonly int $id,
+        public readonly int    $id,
         public readonly string $brand,
         public readonly string $model,
         public readonly string $dailyPrice,
         public readonly string $description,
         // public readonly BlobType $image
-    ){
+    ) {
     }
 
-    public function jsonSerialize() 
+    public function jsonSerialize(): array
     {
-        return 
-        [
+        return [
             "id"            => $this->id,
             "brand"         => $this->brand,
             "model"         => $this->model,

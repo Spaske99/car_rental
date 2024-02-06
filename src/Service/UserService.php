@@ -47,7 +47,7 @@ class UserService
         $data = [];
 
         foreach ($users as $user) {
-            $data[] = $this->getUserDTO($user);
+            $data[] = $this->getUserDTO($user)->jsonSerialize();
         }
 
         return $data;
@@ -56,7 +56,7 @@ class UserService
     // GET USER
     public function get($user)
     {
-        return  $this->getUserDTO($user);
+        return $this->getUserDTO($user)->jsonSerialize();
     }
 
     // UPDATE USER
@@ -72,7 +72,7 @@ class UserService
         return $this->getUserDTO($user)->jsonSerialize();
     }
 
-    // DELETE USER
+    // DELETE USER AND ASSOCIATED RENTS
     public function delete($user)
     {
         $rents = $this->manager->getRepository(Rent::class)->findByUser($user);
@@ -93,7 +93,7 @@ class UserService
             $user->getLastName(),
             $user->getEmail(),
             $user->getPassword(),
-            $user->getRole()->getRoleType()
+            $user->getRole()
         );
     }
 }

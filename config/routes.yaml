@@ -29,9 +29,9 @@ delete_user:
     controller: 'App\Controller\UserController::delete'
     methods: DELETE
 
-add_car:
+create_car:
     path: '/car'
-    controller: 'App\Controller\CarController::add'
+    controller: 'App\Controller\CarController::create'
     methods: POST
 
 get_all_cars:
@@ -54,9 +54,9 @@ delete_car:
     controller: 'App\Controller\CarController::delete'
     methods: DELETE
 
-add_rent:
+create_rent:
     path: '/rent'
-    controller: 'App\Controller\RentController::add'
+    controller: 'App\Controller\RentController::create'
     methods: POST
 
 get_all_rents:
