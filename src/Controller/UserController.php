@@ -27,11 +27,7 @@ class UserController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-
-            if (empty($data['firstName']) || empty($data['lastName']) || empty($data['email']) || empty($data['password']) || empty($data['role'])) {
-                throw new BadRequestHttpException('Expecting mandatory parameters!');
-            }
-
+  
             $this->userService->create($data);
 
             return new JsonResponse('User created.', Response::HTTP_CREATED);
@@ -44,13 +40,7 @@ class UserController extends AbstractController
     public function getAll(): JsonResponse
     {
         try {
-            $users = $this->userRepository->findAll();
-
-            if (empty($users)) {
-                throw new NotFoundHttpException('No users found!');
-            }
-
-            return new JsonResponse($this->userService->getAll($users), Response::HTTP_OK);
+            return new JsonResponse($this->userService->getAll(), Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
@@ -60,13 +50,7 @@ class UserController extends AbstractController
     public function get($id): JsonResponse
     {
         try {
-            $user = $this->userRepository->find($id);  
-
-            if ($user === null) {
-                throw new NotFoundHttpException("User with ID $id not found!");
-            }        
-
-            return new JsonResponse($this->userService->get($user), Response::HTTP_OK);
+            return new JsonResponse($this->userService->get($id), Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {      
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
@@ -76,15 +60,9 @@ class UserController extends AbstractController
     public function update($id, Request $request): JsonResponse
     {
         try {
-            $user = $this->userRepository->find($id);
-
-            if ($user === null) {
-                throw new NotFoundHttpException("User with ID $id not found!");
-            }
-            
             $data = json_decode($request->getContent(), true);
 
-            $updatedUser = $this->userService->update($user, $data);  
+            $updatedUser = $this->userService->update($id, $data);  
 
             return new JsonResponse($updatedUser, Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
@@ -96,13 +74,7 @@ class UserController extends AbstractController
     public function delete($id): JsonResponse
     {
         try {
-            $user = $this->userRepository->find($id);
-
-            if ($user === null) {
-                throw new NotFoundHttpException("User with ID $id not found!");
-            }
-
-            $this->userService->delete($user);      
+            $this->userService->delete($id);      
 
             return new JsonResponse('User deleted.', Response::HTTP_NO_CONTENT);
         } catch (NotFoundHttpException $e) {

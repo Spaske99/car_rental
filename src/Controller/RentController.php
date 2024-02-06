@@ -28,10 +28,6 @@ class RentController extends AbstractController
         try {
             $data = json_decode($request->getContent(), true);
 
-            if (empty($data['rentedFrom']) || empty($data['rentedUntil']) || empty($data['approved']) || empty($data['user']) || empty($data['car'])) {
-                throw new BadRequestHttpException('Expecting mandatory parameters!');
-            }
-
             $this->rentService->create($data);
             
             return new JsonResponse('Rent created.', Response::HTTP_CREATED);
@@ -44,13 +40,7 @@ class RentController extends AbstractController
     public function getAll(): JsonResponse
     {
         try {
-            $rents = $this->rentRepository->findAll();
-
-            if (empty($rents)) {
-                throw new NotFoundHttpException('No rents found!');
-            }
-
-            return new JsonResponse($this->rentService->getAll($rents), Response::HTTP_OK);
+            return new JsonResponse($this->rentService->getAll(), Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
@@ -59,14 +49,8 @@ class RentController extends AbstractController
     // GET RENT
     public function get($id): JsonResponse
     {
-        try {
-            $rent = $this->rentRepository->find($id);
-
-            if ($rent === null) {
-                throw new NotFoundHttpException("Rent with ID $id not found!");
-            }
-    
-            return new JsonResponse($this->rentService->get($rent), Response::HTTP_OK);
+        try {    
+            return new JsonResponse($this->rentService->get($id), Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
@@ -76,15 +60,9 @@ class RentController extends AbstractController
     public function update(Request $request, $id): JsonResponse
     {
         try {
-            $rent = $this->rentRepository->find($id);
-
-            if ($rent === null) {
-                throw new NotFoundHttpException("Rent with ID $id not found!");
-            }
-
             $data = json_decode($request->getContent(), true);
 
-            $updatedRent = $this->rentService->update($rent, $data);
+            $updatedRent = $this->rentService->update($id, $data);
 
             return new JsonResponse($updatedRent, Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
@@ -96,13 +74,7 @@ class RentController extends AbstractController
     public function delete($id): jsonResponse
     {
         try {
-            $rent = $this->rentRepository->find($id);
-
-            if ($rent === null) {
-                throw new NotFoundHttpException("Rent with ID $id not found!");
-            }
-
-            $this->rentRepository->delete($rent);
+            $this->rentService->delete($id);
             
             return new JsonResponse('Rent deleted.', Response::HTTP_NO_CONTENT);
         } catch (NotFoundHttpException $e) {

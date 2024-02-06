@@ -8,6 +8,8 @@ use App\Entity\Role;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserService 
 {
@@ -27,7 +29,11 @@ class UserService
         $lastName = $data['lastName'];
         $email = $data['email'];
         $password = $data['password'];
-        $role = $data['role'];
+        $role = $this->manager->getRepository(Role::class)->find($data['role']);
+
+        if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($role)) {
+            throw new BadRequestHttpException('Expecting mandatory parameters!');
+        }
 
         $user = new User();
 
@@ -36,14 +42,20 @@ class UserService
             ->setLastName($lastName)
             ->setEmail($email)
             ->setPassword($password)
-            ->setRole($this->manager->getRepository(Role::class)->find($role));
+            ->setRole($role);
 
         $this->userRepository->create($user);
     }
 
     // GET_ALL USERS
-    public function getAll($users)
+    public function getAll()
     {
+        $users = $this->userRepository->findAll();
+
+        if (empty($users)) {
+            throw new NotFoundHttpException('No users found!');
+        }
+
         $data = [];
 
         foreach ($users as $user) {
@@ -54,14 +66,26 @@ class UserService
     }
 
     // GET USER
-    public function get($user)
+    public function get($id)
     {
+        $user = $this->userRepository->find($id);
+
+        if ($user === null) {
+            throw new NotFoundHttpException("User with ID $id not found!");
+        }
+
         return $this->getUserDTO($user)->jsonSerialize();
     }
 
     // UPDATE USER
-    public function update($user, $data)
+    public function update($id, $data)
     {
+        $user = $this->userRepository->find($id);
+
+        if ($user === null) {
+            throw new NotFoundHttpException("User with ID $id not found!");
+        }
+
         empty($data['firstName']) ? true : $user->setFirstName($data['firstName']);
         empty($data['lastName']) ? true : $user->setLastName($data['lastName']);
         empty($data['email']) ? true : $user->setEmail($data['email']);
@@ -73,8 +97,14 @@ class UserService
     }
 
     // DELETE USER AND ASSOCIATED RENTS
-    public function delete($user)
+    public function delete($id)
     {
+        $user = $this->userRepository->find($id);
+
+        if ($user === null) {
+            throw new NotFoundHttpException("User with ID $id not found!");
+        }
+
         $rents = $this->manager->getRepository(Rent::class)->findByUser($user);
 
         foreach ($rents as $rent) {

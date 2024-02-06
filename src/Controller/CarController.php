@@ -27,10 +27,6 @@ class CarController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-
-            if (empty($data['brand']) || empty($data['model']) || empty($data['dailyPrice']) || empty($data['description'])) {
-                throw new BadRequestHttpException('Expecting mandatory parameters!');
-            }
             
             $this->carService->create($data);
 
@@ -44,13 +40,7 @@ class CarController extends AbstractController
     public function getAll(): JsonResponse
     {
         try {
-            $cars = $this->carRepository->findAll();
-
-            if (empty($cars)) {
-                throw new NotFoundHttpException('No cars found!');
-            }
-
-            return new JsonResponse($this->carService->getAll($cars), Response::HTTP_OK);
+            return new JsonResponse($this->carService->getAll(), Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
@@ -60,13 +50,7 @@ class CarController extends AbstractController
     public function get($id): JsonResponse
     {
         try {
-            $car = $this->carRepository->find($id);
-
-            if ($car === null) {
-                throw new NotFoundHttpException("Car with ID $id not found!");
-            } 
-
-            return new JsonResponse($this->carService->get($car), Response::HTTP_OK);
+            return new JsonResponse($this->carService->get($id), Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
@@ -75,16 +59,10 @@ class CarController extends AbstractController
     // UPDATE CAR
     public function update(Request $request, $id): JsonResponse
     {
-        try {
-            $car = $this->carRepository->find($id);
-
-            if ($car === null) {
-                throw new NotFoundHttpException("Car with ID $id not found!");
-            }
-            
+        try {          
             $data = json_decode($request->getContent(), true);
 
-            $updatedCar = $this->carService->update($car, $data);
+            $updatedCar = $this->carService->update($id, $data);
             
             return new JsonResponse($updatedCar, Response::HTTP_OK);
         } catch (NotFoundHttpException $e) {
@@ -96,13 +74,7 @@ class CarController extends AbstractController
     public function delete($id): JsonResponse
     {
         try {
-            $car = $this->carRepository->find($id);
-
-            if ($car === null) {
-                throw new NotFoundHttpException("Car with ID $id not found!");
-            }
-
-            $this->carService->delete($car);
+            $this->carService->delete($id);
 
             return new JsonResponse('Car deleted.', Response::HTTP_NO_CONTENT);
         } catch (NotFoundHttpException $e) {

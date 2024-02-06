@@ -7,6 +7,8 @@ use App\Entity\Car;
 use App\Entity\Rent;
 use App\Repository\CarRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CarService 
 {
@@ -28,6 +30,10 @@ class CarService
         $description = $data['description'];
         $image = $data['image'];
 
+        if (empty($brand) || empty($model) || empty($dailyPrice) || empty($description) || empty($image)) {
+            throw new BadRequestHttpException('Expecting mandatory parameters!');
+        }
+
         $car = new Car();
 
         $car
@@ -41,8 +47,14 @@ class CarService
     }
 
     // GET_ALL CARS
-    public function getAll($cars)
+    public function getAll()
     {
+        $cars = $this->carRepository->findAll();
+
+        if (empty($cars)) {
+            throw new NotFoundHttpException('No cars found!');
+        }
+
         $data = [];
             
         foreach ($cars as $car) {
@@ -53,14 +65,26 @@ class CarService
     }
 
     // GET CAR
-    public function get($car)
+    public function get($id)
     {
+        $car = $this->carRepository->find($id);
+
+        if ($car === null) {
+            throw new NotFoundHttpException("Car with ID $id not found!");
+        } 
+
         return $this->getCarDTO($car)->jsonSerialize();
     }
 
     // UPDATE CAR
-    public function update($car, $data)
+    public function update($id, $data)
     {
+        $car = $this->carRepository->find($id);
+
+        if ($car === null) {
+            throw new NotFoundHttpException("Car with ID $id not found!");
+        }
+
         empty($data['brand']) ? true : $car->setBrand($data['brand']);
         empty($data['model']) ? true : $car->setModel($data['model']);
         empty($data['dailyPrice']) ? true : $car->setDailyPrice($data['dailyPrice']);
@@ -72,8 +96,14 @@ class CarService
     }
 
     // DELETE CAR AND ASSOCIATED RENTS
-    public function delete($car) 
+    public function delete($id) 
     {
+        $car = $this->carRepository->find($id);
+
+        if ($car === null) {
+            throw new NotFoundHttpException("Car with ID $id not found!");
+        }
+
         $rents = $this->manager->getRepository(Rent::class)->findByCar($car);
 
         foreach ($rents as $rent) {
